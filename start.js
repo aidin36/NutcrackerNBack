@@ -5,9 +5,10 @@ var currentController = NaN;
 /*
  * Main loop of the game.
  */
+// TODO: Move it to views.
 var gameLoop = function() {
   requestAnimationFrame(gameLoop);
-  
+
   if (currentController)
   {
     currentController.update();

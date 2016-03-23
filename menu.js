@@ -9,6 +9,5 @@ GameMenu.prototype = {
     //var stage = new PIXI.Container();
     //renderer.render(stage);
     var controller = new GameController(this.renderer);
-    controller.initialize();
   },
 };
