@@ -6,18 +6,26 @@ var GameController = function(renderer) {
   this.visualSequence = this._generateSequence();
   this.audioSequence = this._generateSequence();
 
+  window.addEventListener("keydown", this._keyDownHandler.bind(this), false);
+
   // Starting the game by handing the control to this controller.
   currentController = this;
   
-  window.setInterval(this._nextStimulu.bind(this), 3000);
+  // Interval to update stimulu.
+  this.logicTimer = window.setInterval(this._nextStimulu.bind(this), 2000);
 };
 
 GameController.prototype = {
   renderer: NaN,
   gameView: NaN,
+  logicTimer: NaN,
   visualSequence: NaN,
   audioSequence: NaN,
   currentStimuluIndex: 0,
+  score: 0,
+  // Will set to true if user previously hited a key for stimulu.
+  visualKeyHited: false,
+  audioKeyHited: false,
   
   /*
    * Updates the game logic and view.
@@ -26,16 +34,48 @@ GameController.prototype = {
   update: function() {
     this.gameView.drawVisual(
       this.visualSequence[this.currentStimuluIndex]["value"]);
-    console.log(this.currentStimuluIndex);
+      
+    this.visualKeyHited = false;
     
     this.gameView.refreshView();
   },
   
-  _nextStimulu: function() {
-    console.log("Tick " + this.currentStimuluIndex);
-    this.currentStimuluIndex += 1;
+  /*
+   * Handles key event of the window.
+   */
+  _keyDownHandler: function(event) {
+    console.log(event.keyCode);
+    
+    if (!this.visualKeyHited && event.keyCode == 74) {
+      // User press the key of visual stimulu (J).
+      this.visualKeyHited = true;
+      if (this.visualSequence[this.currentStimuluIndex]["hit"]) {
+        this.gameView.drawVisualHitMark(true);
+        this.score += 1;
+      }
+      else {
+        this.gameView.drawVisualHitMark(false);
+        this.score -= 1;
+      }
+    }
+    
+    if (!this.audioKeyHited && event.keyCode == 70) {
+      // User press the key of audio stimulu (F).
+    }
   },
-  
+
+  /*
+   * This funciton would be called in an interval, and loads the next stimulu.
+   */  
+  _nextStimulu: function() {
+    this.currentStimuluIndex += 1;
+    
+    // Stop the timer if stimuli ends.
+    if (this.currentStimuluIndex >= 11) {
+      window.clearInterval(this.logicTimer);
+    }
+  },
+
   /*
    * Generates a sequence of random numbers between 0 and 8
    */
@@ -75,6 +115,8 @@ GameController.prototype = {
 var GameViewBase = function(renderer) {
   this.renderer = renderer;
   this.stage = new PIXI.Container();
+  
+  this._initializeStage();
 };
 
 GameViewBase.prototype = {
@@ -83,6 +125,11 @@ GameViewBase.prototype = {
   renderer: NaN,
   // Keeps previous sprite, so we can remove it from the stage later.
   previouslyDrawnVisual: NaN,
+  
+  visualHitOK: NaN,
+  visualHitNOK: NaN,
+  audioHitOK: NaN,
+  audioHitNOK: NaN,
   
   /*
    * Draws the visual stimulus.
@@ -95,6 +142,9 @@ GameViewBase.prototype = {
       this.stage.removeChild(this.previouslyDrawnVisual);
       this.stage.addChild(this.sprites[index]);
       this.previouslyDrawnVisual = this.sprites[index];
+      
+      this.visualHitOK.visible = false;
+      this.visualHitNOK.visible = false;
     }
   },
   
@@ -108,10 +158,56 @@ GameViewBase.prototype = {
   },
   
   /*
+   * Draws a hit mark for visual stimulu, e.g. a tick or cross on the right
+   * side.
+   * 
+   * @param correct: True means user was correct on her hit, false otherwise.
+   */
+  drawVisualHitMark: function(correct) {
+    if (correct) {
+      this.visualHitOK.visible = true;
+    }
+    else {
+      this.visualHitNOK.visible = true;
+    }
+  },
+  
+  /*
    * Re-draws the game scene.
    */
   refreshView: function() {
     this.renderer.render(this.stage);
+  },
+  
+  /*
+   * Initializes the stage.
+   */
+  _initializeStage: function() {
+    // TODO: Hardcoded positions and sizes.
+    this.visualHitOK = new PIXI.Text("✔", {fill: "green"});
+    this.visualHitOK.position.set(550, 220);
+    this.visualHitOK.scale.set(2, 2);
+    this.visualHitOK.visible = false;
+
+    this.visualHitNOK = new PIXI.Text("✘", {fill: "red"});
+    this.visualHitNOK.position.set(550, 220);
+    this.visualHitNOK.scale.set(2, 2);
+    this.visualHitNOK.visible = false;
+
+    this.audioHitOK = new PIXI.Text("✔", {fill: "green"});
+    this.audioHitOK.position.set(150, 220);
+    this.audioHitOK.scale.set(2, 2);
+    this.audioHitOK.visible = false;
+
+    this.audioHitNOK = new PIXI.Text("✘", {fill: "red"});
+    this.audioHitNOK.position.set(150, 220);
+    this.audioHitNOK.scale.set(2, 2);
+    this.audioHitNOK.visible = false;
+
+    this.stage.addChild(this.visualHitOK);
+    this.stage.addChild(this.visualHitNOK);
+    this.stage.addChild(this.audioHitOK);
+    this.stage.addChild(this.audioHitNOK);
   },
   
   /*
