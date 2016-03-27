@@ -43,6 +43,9 @@ GameViewBase.prototype = {
   playAudio: function(index) {
     console.log("playing: " + index);
     this.audios[index].play();
+
+    this.audioHitOK.visible = false;
+    this.audioHitNOK.visible = false;
   },
   
   /*

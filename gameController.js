@@ -44,11 +44,12 @@ GameController.prototype = {
       
       this.visualKeyHited = false;
       this.audioKeyHited = false;
-    
-      this.gameView.refreshView();
     }
 
     this.previousStimuluIndex = this.currentStimuluIndex;
+
+    // Refreshing the view.
+    this.gameView.refreshView();
   },
   
   /*
