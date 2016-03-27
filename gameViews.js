@@ -41,7 +41,6 @@ GameViewBase.prototype = {
    * @param index: Index of the sound to play from the list of stimuli.
    */
   playAudio: function(index) {
-    console.log("playing: " + index);
     this.audios[index].play();
 
     this.audioHitOK.visible = false;
@@ -76,6 +75,10 @@ GameViewBase.prototype = {
     else {
       this.audioHitNOK.visible = true;
     }
+  },
+
+  updateScore: function(newScore) {
+    
   },
 
   /*

@@ -56,8 +56,6 @@ GameController.prototype = {
    * Handles key event of the window.
    */
   _keyDownHandler: function(event) {
-    console.log(event.keyCode);
-    
     if (!this.visualKeyHited && event.keyCode == 74) {
       // User press the key of visual stimulu (J).
       this.visualKeyHited = true;
