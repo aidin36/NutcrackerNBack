@@ -19,6 +19,8 @@ GameViewBase.prototype = {
   visualHitNOK: NaN,
   audioHitOK: NaN,
   audioHitNOK: NaN,
+
+  scoreText: NaN,
   
   /*
    * Draws the visual stimulus.
@@ -78,7 +80,7 @@ GameViewBase.prototype = {
   },
 
   updateScore: function(newScore) {
-    
+    this.scoreText.text = "Score: " + newScore;
   },
 
   /*
@@ -93,30 +95,36 @@ GameViewBase.prototype = {
    */
   _initializeStage: function() {
     // TODO: Hardcoded positions and sizes.
-    this.visualHitOK = new PIXI.Text("✔", {fill: "green"});
+    this.visualHitOK = new PIXI.Text("✔",
+      {fill: "green", font: "bold 42pt Arial"});
     this.visualHitOK.position.set(550, 220);
-    this.visualHitOK.scale.set(2, 2);
     this.visualHitOK.visible = false;
 
-    this.visualHitNOK = new PIXI.Text("✘", {fill: "red"});
+    this.visualHitNOK = new PIXI.Text("✘",
+      {fill: "red", font: "bold 42pt Arial"});
     this.visualHitNOK.position.set(550, 220);
-    this.visualHitNOK.scale.set(2, 2);
     this.visualHitNOK.visible = false;
 
-    this.audioHitOK = new PIXI.Text("✔", {fill: "green"});
+    this.audioHitOK = new PIXI.Text("✔",
+      {fill: "green", font: "bold 42pt Arial"});
     this.audioHitOK.position.set(150, 220);
-    this.audioHitOK.scale.set(2, 2);
     this.audioHitOK.visible = false;
 
-    this.audioHitNOK = new PIXI.Text("✘", {fill: "red"});
+    this.audioHitNOK = new PIXI.Text("✘",
+      {fill: "red", font: "bold 42pt Arial"});
     this.audioHitNOK.position.set(150, 220);
-    this.audioHitNOK.scale.set(2, 2);
     this.audioHitNOK.visible = false;
 
     this.stage.addChild(this.visualHitOK);
     this.stage.addChild(this.visualHitNOK);
     this.stage.addChild(this.audioHitOK);
     this.stage.addChild(this.audioHitNOK);
+
+    // Creating a text to show the Score
+    this.scoreText = new PIXI.Text("Score: 0",
+      {fill: "blue"});
+    this.scoreText.position.set(10, 10);
+    this.stage.addChild(this.scoreText);
   },
   
   /*

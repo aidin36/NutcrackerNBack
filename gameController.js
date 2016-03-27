@@ -81,6 +81,8 @@ GameController.prototype = {
         this.score -= 1;
       }
     }
+
+    this.gameView.updateScore(this.score);
   },
 
   /*
