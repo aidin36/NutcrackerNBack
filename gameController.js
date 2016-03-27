@@ -22,6 +22,7 @@ GameController.prototype = {
   visualSequence: NaN,
   audioSequence: NaN,
   currentStimuluIndex: 0,
+  previousStimuluIndex: -1,
   score: 0,
   // Will set to true if user previously hited a key for stimulu.
   visualKeyHited: false,
@@ -34,12 +35,20 @@ GameController.prototype = {
   update: function() {
     requestAnimationFrame(this.update.bind(this));
     
-    this.gameView.drawVisual(
-      this.visualSequence[this.currentStimuluIndex]["value"]);
+    // Don't update with the same index more than once.
+    if (this.currentStimuluIndex != this.previousStimuluIndex) {
+      this.gameView.drawVisual(
+        this.visualSequence[this.currentStimuluIndex]["value"]);
+      this.gameView.playAudio(
+        this.audioSequence[this.currentStimuluIndex]["value"]);
       
-    this.visualKeyHited = false;
+      this.visualKeyHited = false;
+      this.audioKeyHited = false;
     
-    this.gameView.refreshView();
+      this.gameView.refreshView();
+    }
+
+    this.previousStimuluIndex = this.currentStimuluIndex;
   },
   
   /*
@@ -63,6 +72,15 @@ GameController.prototype = {
     
     if (!this.audioKeyHited && event.keyCode == 70) {
       // User press the key of audio stimulu (F).
+      this.audioKeyHited = true;
+      if (this.audioSequence[this.currentStimuluIndex]["hit"]) {
+        this.gameView.drawAudioHitMark(true);
+        this.score += 1;
+      }
+      else {
+        this.gameView.drawAudioHitMark(false);
+        this.score -= 1;
+      }
     }
   },
 

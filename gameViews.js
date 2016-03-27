@@ -8,10 +8,12 @@ var GameViewBase = function(renderer) {
 
 GameViewBase.prototype = {
   sprites: [],
+  audios: [],
   stage: NaN,
   renderer: NaN,
+
   // Keeps previous sprite, so we can remove it from the stage later.
-  previouslyDrawnVisual: NaN,
+  previousIndex: NaN,
   
   visualHitOK: NaN,
   visualHitNOK: NaN,
@@ -24,15 +26,13 @@ GameViewBase.prototype = {
    * @param index: Index of visual to show from the list of visual stimuli.
    */
   drawVisual: function(index) {
-    // Don't bother setting a new child, if visual hasn't changed yet.
-    if (this.previouslyDrawnVisual != this.sprites[index]) {
-      this.stage.removeChild(this.previouslyDrawnVisual);
-      this.stage.addChild(this.sprites[index]);
-      this.previouslyDrawnVisual = this.sprites[index];
-      
-      this.visualHitOK.visible = false;
-      this.visualHitNOK.visible = false;
-    }
+    this.stage.removeChild(this.sprites[this.previousIndex]);
+    this.stage.addChild(this.sprites[index]);
+
+    this.previousIndex = index;
+
+    this.visualHitOK.visible = false;
+    this.visualHitNOK.visible = false;
   },
   
   /*
@@ -41,7 +41,8 @@ GameViewBase.prototype = {
    * @param index: Index of the sound to play from the list of stimuli.
    */
   playAudio: function(index) {
-    
+    console.log("playing: " + index);
+    this.audios[index].play();
   },
   
   /*
@@ -58,7 +59,22 @@ GameViewBase.prototype = {
       this.visualHitNOK.visible = true;
     }
   },
-  
+
+  /*
+   * Draws a hit mark for audio stimulu, e.g. a tick or cross on the left
+   * side.
+   * 
+   * @param correct: True means user was correct on her hit, false otherwise.
+   */
+  drawAudioHitMark: function(correct) {
+    if (correct) {
+      this.audioHitOK.visible = true;
+    }
+    else {
+      this.audioHitNOK.visible = true;
+    }
+  },
+
   /*
    * Re-draws the game scene.
    */
@@ -110,12 +126,21 @@ GameViewBase.prototype = {
 var OddGameView = function(renderer) {
   GameViewBase.call(this, renderer);
 
-  for (var i = 0; i < 9; i++)
+  // Loading sprites.
+  for (var i = 0; i <= 8; i++)
   {
     var sprite = new PIXI.Sprite(
       PIXI.Texture.fromImage("images/odd" + i + ".png"));
     this._setSpritePosition(sprite);
     this.sprites.push(sprite);
+  }
+
+  // Loading audios.
+  for (var i = 1; i <= 9; i++) {
+    var audio = new Audio("audio/" + i + ".ogg");
+    // Pre-loading audio.
+    audio.load();
+    this.audios.push(audio);
   }
 };
 
