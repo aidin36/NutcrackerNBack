@@ -24,5 +24,5 @@ document.getElementById("game-scene").appendChild(renderer.view);
 
 gameLoop();
 
-var menu = new GameMenu(renderer);
+var menu = new MenuController(renderer);
 menu.initialize();

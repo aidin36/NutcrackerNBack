@@ -1,7 +1,7 @@
 
-var GameController = function(renderer) {
+var GameController = function(renderer, themeClass) {
   this.renderer = renderer;
-  this.gameView = new OddGameView(this.renderer);
+  this.gameView = new themeClass(this.renderer);
 
   this.visualSequence = this._generateSequence();
   this.audioSequence = this._generateSequence();
