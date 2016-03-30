@@ -6,8 +6,7 @@ This is a version of Dual N-Back game, implemented with Javascript using [Pixi][
 Dual N-Back can make you smarter!
 ---------------------------------
 
-According to some researches (See these two articles on New York Times Magazine [+][2] and [+][3] practicing Dual N-Back can improve your concentration (at work or while driving, for example) and your fluid intelligence.
-
+According to some researches practicing Dual N-Back can improve your concentration (at work or while driving, for example) and your fluid intelligence. (See these two articles on New York Times Magazine [+][2] and [+][3])
 
 Why Nutcracker?
 ---------------
