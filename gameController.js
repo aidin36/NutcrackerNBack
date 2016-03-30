@@ -1,10 +1,10 @@
 
 var GameController = function(renderer, themeClass) {
-  this.renderer = renderer;
-  this.gameView = new themeClass(this.renderer);
+  this._renderer = renderer;
+  this._gameView = new themeClass(this._renderer);
 
-  this.visualSequence = this._generateSequence();
-  this.audioSequence = this._generateSequence();
+  this._visualSequence = this._generateSequence();
+  this._audioSequence = this._generateSequence();
 
   window.addEventListener("keydown", this._keyDownHandler.bind(this), false);
 
@@ -12,21 +12,21 @@ var GameController = function(renderer, themeClass) {
   this.update();
   
   // Interval to update stimulu.
-  this.logicTimer = window.setInterval(this._nextStimulu.bind(this), 2000);
+  this._logicTimer = window.setInterval(this._nextStimulu.bind(this), 2000);
 };
 
 GameController.prototype = {
-  renderer: NaN,
-  gameView: NaN,
-  logicTimer: NaN,
-  visualSequence: NaN,
-  audioSequence: NaN,
-  currentStimuluIndex: 0,
-  previousStimuluIndex: -1,
-  score: 0,
+  _renderer: NaN,
+  _gameView: NaN,
+  _logicTimer: NaN,
+  _visualSequence: NaN,
+  _audioSequence: NaN,
+  _currentStimuluIndex: 0,
+  _previousStimuluIndex: -1,
+  _score: 0,
   // Will set to true if user previously hited a key for stimulu.
-  visualKeyHited: false,
-  audioKeyHited: false,
+  _visualKeyHited: false,
+  _audioKeyHited: false,
   
   /*
    * Updates the game logic and view.
@@ -36,64 +36,64 @@ GameController.prototype = {
     requestAnimationFrame(this.update.bind(this));
     
     // Don't update with the same index more than once.
-    if (this.currentStimuluIndex != this.previousStimuluIndex) {
-      this.gameView.drawVisual(
-        this.visualSequence[this.currentStimuluIndex]["value"]);
-      this.gameView.playAudio(
-        this.audioSequence[this.currentStimuluIndex]["value"]);
+    if (this._currentStimuluIndex != this._previousStimuluIndex) {
+      this._gameView.drawVisual(
+        this._visualSequence[this._currentStimuluIndex]["value"]);
+      this._gameView.playAudio(
+        this._audioSequence[this._currentStimuluIndex]["value"]);
       
-      this.visualKeyHited = false;
-      this.audioKeyHited = false;
+      this._visualKeyHited = false;
+      this._audioKeyHited = false;
     }
 
-    this.previousStimuluIndex = this.currentStimuluIndex;
+    this._previousStimuluIndex = this._currentStimuluIndex;
 
     // Refreshing the view.
-    this.gameView.refreshView();
+    this._gameView.refreshView();
   },
   
   /*
    * Handles key event of the window.
    */
   _keyDownHandler: function(event) {
-    if (!this.visualKeyHited && event.keyCode == 74) {
+    if (!this._visualKeyHited && event.keyCode == 74) {
       // User press the key of visual stimulu (J).
-      this.visualKeyHited = true;
-      if (this.visualSequence[this.currentStimuluIndex]["hit"]) {
-        this.gameView.drawVisualHitMark(true);
-        this.score += 1;
+      this._visualKeyHited = true;
+      if (this._visualSequence[this._currentStimuluIndex]["hit"]) {
+        this._gameView.drawVisualHitMark(true);
+        this._score += 1;
       }
       else {
-        this.gameView.drawVisualHitMark(false);
-        this.score -= 1;
+        this._gameView.drawVisualHitMark(false);
+        this._score -= 1;
       }
     }
     
-    if (!this.audioKeyHited && event.keyCode == 70) {
+    if (!this._audioKeyHited && event.keyCode == 70) {
       // User press the key of audio stimulu (F).
-      this.audioKeyHited = true;
-      if (this.audioSequence[this.currentStimuluIndex]["hit"]) {
-        this.gameView.drawAudioHitMark(true);
-        this.score += 1;
+      this._audioKeyHited = true;
+      if (this._audioSequence[this._currentStimuluIndex]["hit"]) {
+        this._gameView.drawAudioHitMark(true);
+        this._score += 1;
       }
       else {
-        this.gameView.drawAudioHitMark(false);
-        this.score -= 1;
+        this._gameView.drawAudioHitMark(false);
+        this._score -= 1;
       }
     }
 
-    this.gameView.updateScore(this.score);
+    this._gameView.updateScore(this._score);
   },
 
   /*
    * This funciton would be called in an interval, and loads the next stimulu.
    */  
   _nextStimulu: function() {
-    this.currentStimuluIndex += 1;
+    this._currentStimuluIndex += 1;
     
     // Stop the timer if stimuli ends.
-    if (this.currentStimuluIndex >= 11) {
-      window.clearInterval(this.logicTimer);
+    if (this._currentStimuluIndex >= 11) {
+      window.clearInterval(this._logicTimer);
     }
   },
 

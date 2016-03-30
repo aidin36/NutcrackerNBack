@@ -1,26 +1,26 @@
 
 var GameViewBase = function(renderer) {
-  this.renderer = renderer;
-  this.stage = new PIXI.Container();
+  this._renderer = renderer;
+  this._stage = new PIXI.Container();
   
   this._initializeStage();
 };
 
 GameViewBase.prototype = {
-  sprites: [],
-  audios: [],
-  stage: NaN,
-  renderer: NaN,
+  _sprites: [],
+  _audios: [],
+  _stage: NaN,
+  _renderer: NaN,
 
   // Keeps previous sprite, so we can remove it from the stage later.
-  previousIndex: NaN,
+  _previousIndex: NaN,
   
-  visualHitOK: NaN,
-  visualHitNOK: NaN,
-  audioHitOK: NaN,
-  audioHitNOK: NaN,
+  _visualHitOKSprite: NaN,
+  _visualHitNOKSprite: NaN,
+  _audioHitOKSprite: NaN,
+  _audioHitNOKSprite: NaN,
 
-  scoreText: NaN,
+  _scoreText: NaN,
   
   /*
    * Draws the visual stimulus.
@@ -28,13 +28,13 @@ GameViewBase.prototype = {
    * @param index: Index of visual to show from the list of visual stimuli.
    */
   drawVisual: function(index) {
-    this.stage.removeChild(this.sprites[this.previousIndex]);
-    this.stage.addChild(this.sprites[index]);
+    this._stage.removeChild(this._sprites[this._previousIndex]);
+    this._stage.addChild(this._sprites[index]);
 
-    this.previousIndex = index;
+    this._previousIndex = index;
 
-    this.visualHitOK.visible = false;
-    this.visualHitNOK.visible = false;
+    this._visualHitOKSprite.visible = false;
+    this._visualHitNOKSprite.visible = false;
   },
   
   /*
@@ -43,10 +43,10 @@ GameViewBase.prototype = {
    * @param index: Index of the sound to play from the list of stimuli.
    */
   playAudio: function(index) {
-    this.audios[index].play();
+    this._audios[index].play();
 
-    this.audioHitOK.visible = false;
-    this.audioHitNOK.visible = false;
+    this._audioHitOKSprite.visible = false;
+    this._audioHitNOKSprite.visible = false;
   },
   
   /*
@@ -57,10 +57,10 @@ GameViewBase.prototype = {
    */
   drawVisualHitMark: function(correct) {
     if (correct) {
-      this.visualHitOK.visible = true;
+      this._visualHitOKSprite.visible = true;
     }
     else {
-      this.visualHitNOK.visible = true;
+      this._visualHitNOKSprite.visible = true;
     }
   },
 
@@ -72,22 +72,22 @@ GameViewBase.prototype = {
    */
   drawAudioHitMark: function(correct) {
     if (correct) {
-      this.audioHitOK.visible = true;
+      this._audioHitOKSprite.visible = true;
     }
     else {
-      this.audioHitNOK.visible = true;
+      this._audioHitNOKSprite.visible = true;
     }
   },
 
   updateScore: function(newScore) {
-    this.scoreText.text = "Score: " + newScore;
+    this._scoreText.text = "Score: " + newScore;
   },
 
   /*
    * Re-draws the game scene.
    */
   refreshView: function() {
-    this.renderer.render(this.stage);
+    this._renderer.render(this._stage);
   },
   
   /*
@@ -95,36 +95,36 @@ GameViewBase.prototype = {
    */
   _initializeStage: function() {
     // TODO: Hardcoded positions and sizes.
-    this.visualHitOK = new PIXI.Text("✔",
+    this._visualHitOKSprite = new PIXI.Text("✔",
       {fill: "green", font: "bold 42pt Arial"});
-    this.visualHitOK.position.set(550, 220);
-    this.visualHitOK.visible = false;
+    this._visualHitOKSprite.position.set(550, 220);
+    this._visualHitOKSprite.visible = false;
 
-    this.visualHitNOK = new PIXI.Text("✘",
+    this._visualHitNOKSprite = new PIXI.Text("✘",
       {fill: "red", font: "bold 42pt Arial"});
-    this.visualHitNOK.position.set(550, 220);
-    this.visualHitNOK.visible = false;
+    this._visualHitNOKSprite.position.set(550, 220);
+    this._visualHitNOKSprite.visible = false;
 
-    this.audioHitOK = new PIXI.Text("✔",
+    this._audioHitOKSprite = new PIXI.Text("✔",
       {fill: "green", font: "bold 42pt Arial"});
-    this.audioHitOK.position.set(150, 220);
-    this.audioHitOK.visible = false;
+    this._audioHitOKSprite.position.set(150, 220);
+    this._audioHitOKSprite.visible = false;
 
-    this.audioHitNOK = new PIXI.Text("✘",
+    this._audioHitNOKSprite = new PIXI.Text("✘",
       {fill: "red", font: "bold 42pt Arial"});
-    this.audioHitNOK.position.set(150, 220);
-    this.audioHitNOK.visible = false;
+    this._audioHitNOKSprite.position.set(150, 220);
+    this._audioHitNOKSprite.visible = false;
 
-    this.stage.addChild(this.visualHitOK);
-    this.stage.addChild(this.visualHitNOK);
-    this.stage.addChild(this.audioHitOK);
-    this.stage.addChild(this.audioHitNOK);
+    this._stage.addChild(this._visualHitOKSprite);
+    this._stage.addChild(this._visualHitNOKSprite);
+    this._stage.addChild(this._audioHitOKSprite);
+    this._stage.addChild(this._audioHitNOKSprite);
 
     // Creating a text to show the Score
-    this.scoreText = new PIXI.Text("Score: 0",
+    this._scoreText = new PIXI.Text("Score: 0",
       {fill: "blue"});
-    this.scoreText.position.set(10, 10);
-    this.stage.addChild(this.scoreText);
+    this._scoreText.position.set(10, 10);
+    this._stage.addChild(this._scoreText);
   },
   
   /*
@@ -132,8 +132,8 @@ GameViewBase.prototype = {
    */
   _setSpritePosition: function(sprite) {
     //TODO: hardcoded sprite size. Because texture is not loaded yet, and sprite don't know its size.
-    sprite.position.x = (this.renderer.width / 2) - (300 / 2);
-    sprite.position.y = (this.renderer.height / 2) - (300 / 2); 
+    sprite.position.x = (this._renderer.width / 2) - (300 / 2);
+    sprite.position.y = (this._renderer.height / 2) - (300 / 2); 
   },
 };
 
@@ -146,7 +146,7 @@ var OddGameView = function(renderer) {
     var sprite = new PIXI.Sprite(
       PIXI.Texture.fromImage("images/odd" + i + ".png"));
     this._setSpritePosition(sprite);
-    this.sprites.push(sprite);
+    this._sprites.push(sprite);
   }
 
   // Loading audios.
@@ -154,7 +154,7 @@ var OddGameView = function(renderer) {
     var audio = new Audio("audio/" + i + ".ogg");
     // Pre-loading audio.
     audio.load();
-    this.audios.push(audio);
+    this._audios.push(audio);
   }
 };
 
